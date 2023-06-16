@@ -112,9 +112,13 @@ Additionally the server / intent provider is able to request interaction with ad
 # Primary Attributes
 
 data-action: submit to a specific server object/scope if on a form. if on a control, throws this custom event
+
 data-role: autoform, event or by default service (ajax)
+
 data-trigger: what this control can be triggered by (click, submit, or any native event)
+
 data-intent: use available domain-specific intents based on attached service. common transport wrapper defined. allows for request types beyond GET, POST, PUSH, OPTIONS, etc
+
 data-support: payload of this control
 
 And considerations for:
