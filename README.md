@@ -3,15 +3,28 @@
 Approach Interface defines a standard pipeline for interfacing your system. GUI, TUI, API, etc.
 
 ==
+
 This repo is very likely to be a temporary vehicle, used to transfer useful concepts to HTMx.
 Following this knowledge-share we will reattach the Approach mapper tools, prop library and update HTML patterns to use HTMx instead.
 
 We will replace this repo's contents with demos of the Approach layers, eventually
+
 ==
 
 # Basic Concepts
 
 Approach Interface gives you the ability to launch AJAX requests purely from HTML, once including its JS module.
+Checkout index.html and especially how it uses /static/js/approach.interface.js
+
+The main functionality of approach.interface.js is wrapped up in the Interface prototype's $elf.call functions.
+Most such functions match the document intent, such as: 
+REFRESH, APPEND, PREPEND, REMOVE, etc..
+
+The most important functions are:
+- Interface.call.events
+- Interface.call.Service
+- Interface.call.Ajax
+
 
 ```
 <div class="Interface">
