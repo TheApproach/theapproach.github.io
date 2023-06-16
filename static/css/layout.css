@@ -1,0 +1,115 @@
+
+#Stage{ position: relative; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: 0px; padding: 0px; border: none; outline: none;}
+.Screen{
+	list-style: none;
+	display: inline-block;
+	position: absolute; 
+	width: 100vw; height: 100vh; 
+	padding: 0px; margin: 0px;
+}
+#Backdrop{ z-index: 1; top: 0px; left: 0px; bottom: 0px; right: 0px; }
+#Main.Screen{ z-index: 2; top: 0px; left: 0px; }
+#Overlay.Screen{ z-index: 3; position: absolute; top: 0px; left: 0px; display: none; width: 0px; height: 0px; display: inline-block; visibility: hidden;}
+#Offscreen.Screen{ z-index: 0; position: absolute; top: -100vh; left: -100vw; visibility: hidden; }
+
+div.sandbox {
+	width: 100%;
+	padding: 2em;
+}
+
+.rot-90 {
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-o-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	transform: rotate(90deg);
+	display: inline-block;
+}
+
+ul.MyModuleUI.Toolbar {
+	padding: 4px;
+	padding-top: 7px;
+	padding-bottom: 7px;
+	position: absolute;
+	z-index: 999999;
+	border-radius: 3px;
+}
+
+.MyModuleUI.Toolbar,
+.MyModuleUI.Toolbar>li {
+	list-style: none;
+	display: inline-block;
+	background-color: #2E2E2E;
+	font-size: 14pt;
+}
+
+.MyModuleUI.Toolbar>li {
+	position: relative;
+	margin-left: 0.1em;
+	margin-right: 0.1em;
+	transition: 420ms;
+	width: 1em;
+	height: 1em;
+	padding: 0.5em 9px;
+	font-weight: 700;
+	color: white;
+	border-radius: 2px;
+}
+
+.MyModuleUI.Toolbar>li select,
+.MyModuleUI.Toolbar>li select option {
+	min-width: 6.5em;
+	font-size: 14pt;
+	background-color: #2e2e2eFF;
+	color: white;
+	border: none;
+	margin-top: -2px;
+	transition: 420ms;
+
+}
+
+.MyModuleUI.Toolbar>li:hover {
+	background-color: #5C5C5C;
+}
+
+.MyModuleUI.Toolbar>li.inline {
+	width: auto;
+}
+
+.MyModuleUI.Toolbar>li.Separator {
+	background-color: #7E7E7E;
+	width: 1px;
+	padding: 0px;
+	margin: 0px;
+	top: 3px;
+}
+
+
+
+
+
+.Modals > *{
+	padding: 1em;
+	top: 25%;
+	position: absolute;
+	border: 2px solid black;
+	background-color: rgb(24, 45, 114);
+	color: white;
+	min-height: 20vh;
+}
+
+.Modals .ModalA{
+	left: 40vw;
+	top: 40vh;
+	width: 30vw;
+	height: 50vh;
+	display: block;
+}
+
+.Modals .ModalB {
+	left: 10vw;
+	top: 35vh;
+	width: 15vw;
+	height: 40vh;
+	display: block;
+}
