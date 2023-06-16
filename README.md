@@ -45,7 +45,7 @@ In this example, the div node with `class="Interface"` will be equipped with a n
 [element].Interface = new Interface();
 
 This initialization will ultimately cause each `<li>` shown to throw a custom event when clicked, which you may catch with your own module.
-By controlling a JSON object stored in data-support='{..}' you can coordinate state information between several modules, or simply use Inteface to signal events.
+By controlling a JSON object stored in data-context='{..}' you can coordinate state information between several modules, or simply use Inteface to signal events.
 
 Interface object could be extended to make even more custom behavior, but for now just understand that all events caught be `.controls` inside a `.Interface` will be handled by that Interface object. This alone greatly reduces event processing. Additionally, controls will only bind listeners inside themselves to `.control` elements for specific events -- by default click.
 
@@ -119,7 +119,7 @@ data-trigger: what this control can be triggered by (click, submit, or any nativ
 
 data-intent: use available domain-specific intents based on attached service. common transport wrapper defined. allows for request types beyond GET, POST, PUSH, OPTIONS, etc
 
-data-support: payload of this control
+data-context: payload of this control
 
 And considerations for:
 
