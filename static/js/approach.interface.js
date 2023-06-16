@@ -147,16 +147,13 @@ var topChange = 0,
 	projectorClass = "up";
 
 
-var Interface = function (api_base = "orchestrationsyndicate.com") {
+var Interface = function ({Markup = {}, api = "//service.example.com/MyService", user_init = function (e) { return true; }}={}) {
+
 	var $elf = this;
 	
 	this.active = true;
-	this.Instance = 0;
-	this.Reflection = "//" + api_base + "/__api/console.php";
-	this.Utility = "//" + api_base + "/__api/Utility.php";
-	this.Controls = {};
-	this.share = {};
-	this.swap = {};
+	this.api = api;
+	this.Controls = [];
 	this.target = {};
 
 	this.call = {
@@ -167,12 +164,12 @@ var Interface = function (api_base = "orchestrationsyndicate.com") {
 				event_triggers = "click mouseenter mouseleave";
 			$elf.Interface = Markup;
 			if ($(Markup).hasClass("controls")) {
-				$elf.Controls = $(Markup);
-				$elf.Controls.add($elf.Controls.find(".controls"));
+				$elf.Controls = $(Markup);	// [ Markup] for vanilla
+				$elf.Controls.add($elf.Controls.find(".controls"));	// add sub .controls to the jQUery object. array.push for vanilla
 			}
-			else $elf.Controls = $(Markup).find(".controls");
+			else $elf.Controls = $(Markup).find(".controls"); // Markup.querySelector(".controls") for vanilla
 
-			$elf.Controls.on(event_triggers, function (event) {
+			$elf.Controls.on(event_triggers, function (event) {	// each for vanilla
 				$elf.call.events(event);
 			});
 
@@ -716,20 +713,25 @@ var Interface = function (api_base = "orchestrationsyndicate.com") {
 				console.log("Triggering ", Trigger["command"], " with payload ", Trigger["support"]);
 			});
 		},
-		Service: function (target, IntentJSON) {
+		Service: function (target, IntentJSON){
+			let api_url = $elf.api;
+			let api_method = "POST";
+			let api_dataType = "json";
+			
+			let CurrentControl = $(target).closest(".control");			// todo: use defaultable options instead
+			let override_api = CurrentControl.data("api");
+			let override_method = CurrentControl.data("api-method");
+			let override_dataType = CurrentControl.data("api-datatype");
 
+			// override if needed
+			if (override_api) api_url = override_api;
+			if (override_method) api_method = override_method;
+			if (override_dataType) api_dataType = override_dataType;
 
 			var RequestType = ""; // The page action that handles the response (REFRESH, APPEND, PREPEND...)
-			var RequestNoun = ""; // The system class or component you're working with
-			var RequestVerb = ""; // A function name in registrar
+			var RequestNoun = ""; // The system's domain-specific class, component or scope you're working in
+			var RequestVerb = ""; // A function, method, action or operation in the selected scope
 
-			/* on server side..
-			$register[Noun][Verb] = function($command, $support){
-				$result['render'] = 'payload content, can be html or json usually';
-				$result['selector'] = CSS selector or JavaScript callback function name;
-				return $result;
-			}
-			*/
 			var $control_role = false;
 
 			if (IntentJSON["support"] == undefined) IntentJSON.support = {};
@@ -748,9 +750,15 @@ var Interface = function (api_base = "orchestrationsyndicate.com") {
 
 			console.groupCollapsed("Launching Intent " + RequestType + ":" + RequestNoun + ":" + RequestVerb);
 
-			$control_role = $(target).closest(".control").data("role");
+			$control_role = CurrentControl.data("role");
 			//console.log($control_role);
 			//console.log(IntentJSON.command);    //if (RequestNoun == "Instance") console.log("Instance");
+
+
+			// TODO: Replace this with approach.autoform.js module call
+			// Put autoform instance in $elf.manged.autoform = new Approach.Autoform();
+
+
 			if ($control_role == "autoform") {
 
 				console.groupCollapsed("Auforming intent support values..");
@@ -829,14 +837,14 @@ var Interface = function (api_base = "orchestrationsyndicate.com") {
 
 				console.groupEnd();
 			}
-			//console.log("Interface: ", $elf.Interface," Intent: ", IntentJSON);
-
+			
+			/* Send .control Profile to Server - Add/Delete the space to enable
+			///*** ///
 			IntentJSON.support.target = profile(
 				$(target).closest(".control")
 			);
 			IntentJSON.support.page_query = getUrlVars();
-			//console.log("Support: ",IntentJSON.support.target);
-			//console.log("Command: ",IntentJSON.command);
+			///***///
 
 			var intent_list = Object.keys(IntentJSON.command);
 			var hasAction = false;
@@ -899,18 +907,16 @@ var Interface = function (api_base = "orchestrationsyndicate.com") {
 			}; //Switch to JSON3 ?
 
 			ApproachTotalRequestsAJAX++;
-			//$elf.swap = $(target).clone(true);
+			
 			$elf.target = target;
-			$(target).after('<div class="LoadingContain loading"><img src="https://static.' + api_base + '/img/suiteloading.gif" /></div>');
-			$(target).hide();
 			//$(".LoadingContain").addClass("loading");
 			console.groupEnd();
 
 			$.ajax({
-				url: $elf.Utility,
-				type: "post",
+				url: api_url,
+				type: api_method,
 				data: ReqData,
-				dataType: "json",
+				dataType: api_dataType,
 				xhrFields: {
 					withCredentials: true
 				},
@@ -930,6 +936,7 @@ var Interface = function (api_base = "orchestrationsyndicate.com") {
 				role = CurrentControl.data("role"),
 				action = CurrentControl.data("action"),
 				data_trigger = CurrentControl.data("trigger"),
+				
 				IntentJSON = {};
 
 			if (typeof CurrentControl.get(0) == "undefined") {
@@ -954,11 +961,12 @@ var Interface = function (api_base = "orchestrationsyndicate.com") {
 					fired = true;
 				} else if (!$.isEmptyObject(IntentJSON.command)) {
 					fired = true;
+					
 					this.Service(e.target, IntentJSON);
 				}
 			}
 		},
-		Intent: function (IntentJSON, callback = Interface.call.Ajax, url = "https://" + api_base + "/__api/Utility.php") {
+		Intent: function (IntentJSON, callback = Interface.call.Ajax, api = "https://service.example.com/MyService") {
 			console.log('Calling Intent: ', IntentJSON.command);
 			console.log('Supporting intent with data: ', IntentJSON.support);
 
@@ -966,7 +974,7 @@ var Interface = function (api_base = "orchestrationsyndicate.com") {
 				json: JSON.stringify(IntentJSON)
 			};
 			$.ajax({
-				url: url, //url of Utility.php
+				url: api, //url of Utility.php
 				type: "post",
 				data: ReqData, //the json data
 				dataType: "json",
@@ -981,16 +989,7 @@ var Interface = function (api_base = "orchestrationsyndicate.com") {
 	//end $elf.call
 	//end Interface Base
 
-	$elf.call.init(arguments);
+	$elf.call.init(Markup, user_init);
 	return $elf;
 };
 
-
-/*
-$( document ).ready( function()
-{
-	$(".Interface").each(function(instance, Markup)
-	{
-		Markup.Interface=new Interface(Markup);//.call.init(Markup);
-	});
-} );*/

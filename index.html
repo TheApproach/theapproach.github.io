@@ -34,7 +34,12 @@ let onReadyHandle = function(element,selector,markup){
 	// This allows us to initialize blocks updated by arbitrary JS
 
 	$(element).find(".Interface").each( function(instance, Markup){ 
-		Markup.Interface=new Interface(Markup);	
+		let api = "/service/api.json";
+		// Check if Markup has data-api attribute
+		if($(Markup).attr("data-api"))
+			api = $(Markup).attr("data-api");
+
+		Markup.Interface=new Interface({Markup: Markup, api: api});
 	});
 
 	// Normal document ready stuff, but relative to el
@@ -58,7 +63,7 @@ function toggleModal(e){
 	let value = control.find("select[name='PickModals']").val();
 
 	if (value == "-"){
-		$("#Overlay .Modals *").css("visibility","hidden");
+		$("#Overlay .Modals > *").css("visibility","hidden");
 	}
 	else{
 		let v = $("#Overlay .Modals .Modal" + value).css("visibility");
@@ -97,39 +102,48 @@ function toggleModal(e){
 				</li>
 
 				<li class="separator"></li>
-
-				<li	class="control" 
-					data-role="trigger" 
-					data-action="bold.mymodule" 
-				
-				>
+				<li class="inline">Modal A:</li>
+				<li class="control" data-api="/service/modal_a_library.json" data-api-method="GET"
+					data-intent='{ "REFRESH":{ "Library":"View" } }' data-context='{ "_response_target":"#Overlay .Modals .ModalA" }'>
 					<i class="bi-window-stack"></i>
 				</li>
-				<li class="control" data-role="trigger" data-action="italic.mymodule" ><i class="bi bi-type-italic"></i></li>
-				<li class="control" data-role="trigger" data-action="strikethrough.mymodule" ><i class="bi bi-type-strikethrough"></i></li>
-				<li class="control" data-role="trigger" data-action="underline.mymodule" ><i class="bi bi-type-underline"></i></li>
-				<li class="control" data-role="trigger" data-action="color.mymodule" ><i class="bi bi-circle-fill"></i></li>
-				<li class="control" data-role="trigger" data-action="link.mymodule" ><i class="bi bi-link"></i></li>
+				<li class="control" data-api="/service/modal_a_meme.json" data-api-method="GET"
+					data-intent='{ "REFRESH":{ "Image":"View" } }' data-context='{ "_response_target":"#Overlay .Modals .ModalA" }'>
+					<i class="bi-window-stack"></i>
+				</li>
+				<li class="control" data-api="/service/modal_a_youtube.json" data-api-method="GET"
+					data-intent='{ "REFRESH":{ "Video":"View" } }' data-context='{ "_response_target":"#Overlay .Modals .ModalA" }'>
+					<i class="bi-window-stack"></i>
+				</li>
 
 				<li class="separator"></li>
-
-				<li class="control" data-role="trigger" data-action="lineheight.mymodule" ><i class="bi bi-arrows-expand"></i></li>
-				<li class="control" data-role="trigger" data-action="letterspacing.mymodule" ><i class="bi bi-arrows-expand rot-90"></i></li>
-				<li class="control" data-role="trigger" data-action="eraser.mymodule" ><i class="bi bi-eraser"></i></li>
-
-				<li class="separator"></li>
-
-				<li class="control" data-role="trigger" data-action="trash3.mymodule" ><i class="bi bi-trash3"></i></li>
+				<li class="inline">Modal B:</li>
+				<li class="control" data-api="/service/modal_b_library.json" data-api-method="GET"
+					data-intent='{ "REFRESH":{ "Library":"View" } }' data-context='{ "_response_target":"#Overlay .Modals .ModalA" }'>
+					<i class="bi-window-stack"></i>
+				</li>
+				<li class="control" data-api="/service/modal_b_meme.json" data-api-method="GET"
+					data-intent='{ "REFRESH":{ "Image":"View" } }' data-context='{ "_response_target":"#Overlay .Modals .ModalA" }'>
+					<i class="bi-window-stack"></i>
+				</li>
+				<li class="control" data-api="/service/modal_b_youtube.json" data-api-method="GET"
+					data-intent='{ "REFRESH":{ "Video":"View" } }' data-context='{ "_response_target":"#Overlay .Modals .ModalA" }'>
+					<i class="bi-window-stack"></i>
+				</li>
 			</ul>
 		</div>
 	</li>
 	<li id="Overlay" class="Screen">
-		<ul class="Modals">
-			<li class="ModalA"></li>
-			<li class="ModalB"></li>
+		<ul class="Modals Interface">
+			<li class="ModalA"><div class="content"></div></li>
+			<li class="ModalB"><div class="content"></div></li>
 		</ul>
 	</li>
 	<li id="Offscreen" class="Screen"></li>
 </ul>
+
+
+
+
 </body>
 </html>

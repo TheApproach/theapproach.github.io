@@ -84,7 +84,12 @@ ul.MyModuleUI.Toolbar {
 	top: 3px;
 }
 
-
+.Modals .content{
+	padding: 1em;
+	overflow-y: scroll;
+	max-height: calc(100% - 2em);
+	min-height: 100px;
+}
 
 
 
@@ -101,15 +106,15 @@ ul.MyModuleUI.Toolbar {
 .Modals .ModalA{
 	left: 40vw;
 	top: 40vh;
-	width: 30vw;
-	height: 50vh;
+	width: 50vw;
+	height: 55vh;
 	display: block;
 }
 
 .Modals .ModalB {
-	left: 10vw;
+	left: 1vw;
 	top: 35vh;
-	width: 15vw;
-	height: 40vh;
+	width: 35vw;
+	min-height: 40vh;
 	display: block;
 }

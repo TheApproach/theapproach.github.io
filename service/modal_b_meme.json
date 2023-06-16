@@ -1,0 +1,6 @@
+{
+	"REFRESH": {
+		"#Overlay .Modals .ModalB .content": 
+			"<div class='content'><img src='/static/img/memeB.gif' /></div>"
+	}
+}

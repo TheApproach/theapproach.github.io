@@ -42,7 +42,7 @@ Approach.Inflate = function( config = {} ) {
 	$elf.data = {};
 	$elf.valid = true;
 
-	overwriteDefaults(config, $elf.config);
+	overwriteDefaults(config, $elf.config);	// from approach.utility.js
 
 	$elf.init = function() {
 		console.log("Initializing Approach.Inflate..");

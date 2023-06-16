@@ -1,0 +1,6 @@
+{
+	"REFRESH": {
+		"#Overlay .Modals .ModalA .content": 
+			"<div class='content'><ol class='library'><li class='book'><div class='title'>The Great Gatsby</div><div class='author'>F. Scott Fitzgerald</div><div class='year'>1925</div></li><li class='book'><div class='title'>The Grapes of Wrath</div><div class='author'>John Steinbeck</div><div class='year'>1939</div></li><li class='book'><div class='title'>Nineteen Eighty-Four</div><div class='author'>George Orwell</div><div class='year'>1949</div></li><li class='book'><div class='title'>Ulysses</div><div class='author'>James Joyce</div><div class='year'>1922</div></li><li class='book'><div class='title'>Catch-22</div><div class='author'>Joseph Heller</div><div class='year'>1961</div></li><li class='book'><div class='title'>The Catcher in the Rye</div><div class='author'>J. D. Salinger</div><div class='year'>1951</div></li><li class='book'><div class='title'>Beloved</div><div class='author'>Toni Morrison</div><div class='year'>1987</div></li><li class='book'><div class='title'>To Kill a Mockingbird</div><div class='author'>Harper Lee</div><div class='year'>1960</div></li></ol></div>"
+	}
+}

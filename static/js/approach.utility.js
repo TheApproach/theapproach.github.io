@@ -33,7 +33,7 @@ function insertAfter(newNode, referenceNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
 
-// Credit: Matthias Bynens
+// Credit: Matthias Bynens + tweaks by Approach contributors
 // https://mathiasbynens.be/notes/globalthis
 
 (function () {
@@ -91,23 +91,9 @@ function overwriteDefaults(config = {}, defaults = {}) {
     }
 }
 
-function SendIntent(RequestData, callback, post_url="/service/" + "Reflect.php") {
+function SendIntent(RequestData, callback, api) {
     $.ajax({
-        url: post_url,
-        type: "post",
-        data: RequestData,
-        dataType: "json",
-        xhrFields: {
-            withCredentials: true
-        },
-        success: callback
-    });
-}
-
-function SendIntentToRegistrar(RequestData, callback) {
-	api_root="/service/";
-    $.ajax({
-        url: api_root + "Utility.php",
+        url: api,
         type: "post",
         data: RequestData,
         dataType: "json",
@@ -149,13 +135,3 @@ function isEmpty(mixedVar = null){
     }
     return false
 }
-
-
-//     if(
-//         (typeof x == "undefined") ||
-//         ( (x.length == 0 && typeof x == "Array") || !(length in x)  ) ||
-//         ( x == null )
-//     )
-//         return true;
-//     return false;
-// }
