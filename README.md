@@ -1,13 +1,7 @@
 # This repo is to show off Approach - Interface basic functionality.
+It is very much a work in progress.
 
 Approach Interface defines a standard pipeline for interfacing your system. GUI, TUI, API, etc.
-
-==
-
-This repo is very likely to be a temporary vehicle, used to transfer useful concepts to HTMx.
-Following this knowledge-share we will reattach the Approach mapper tools, prop library and update HTML patterns to use HTMx instead.
-
-We will replace this repo's contents with demos of the Approach layers, eventually
 
 ==
 
