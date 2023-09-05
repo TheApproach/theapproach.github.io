@@ -104,7 +104,7 @@ ul.MyModuleUI.Toolbar {
 }
 
 .Modals .ModalA{
-	left: 40vw;
+	left: 1vw;
 	top: 40vh;
 	width: 50vw;
 	height: 55vh;
@@ -112,7 +112,7 @@ ul.MyModuleUI.Toolbar {
 }
 
 .Modals .ModalB {
-	left: 1vw;
+	left: 40vw;
 	top: 35vh;
 	width: 35vw;
 	min-height: 40vh;
