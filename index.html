@@ -96,15 +96,15 @@ function toggleModal(e){
 				>
 					<select name="PickModals">
 						<option value="-">No Modal</option>
-						<option value="A">Show Modal A</option>
-						<option value="B">Show Modal B</option>
+						<option value="A">Show Form A</option>
+						<option value="B">Show Form B</option>
 					</select>
 				</li>
 
 				<li class="separator"></li>
 				<li class="inline">Modal A:</li>
 				<li class="control" data-api="/service/modal_a_library.json" data-api-method="GET"
-					data-intent='{ "REFRESH":{ "Library":"View" } }' data-context='{ "_response_target":"#Overlay .Modals .ModalA" }'>
+					data-intent='{ "REFRESH":{ "Form":"View" } }' data-context='{ "_response_target":"#Overlay .Modals .ModalA" }'>
 					<i class="bi-window-stack"></i>
 				</li>
 				<li class="control" data-api="/service/modal_a_meme.json" data-api-method="GET"
@@ -119,7 +119,7 @@ function toggleModal(e){
 				<li class="separator"></li>
 				<li class="inline">Modal B:</li>
 				<li class="control" data-api="/service/modal_b_library.json" data-api-method="GET"
-					data-intent='{ "REFRESH":{ "Library":"View" } }' data-context='{ "_response_target":"#Overlay .Modals .ModalA" }'>
+					data-intent='{ "REFRESH":{ "Form":"View" } }' data-context='{ "_response_target":"#Overlay .Modals .ModalA" }'>
 					<i class="bi-window-stack"></i>
 				</li>
 				<li class="control" data-api="/service/modal_b_meme.json" data-api-method="GET"
