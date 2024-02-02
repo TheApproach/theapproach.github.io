@@ -1,0 +1,43 @@
+---
+title: Introduction
+description: Render Layer
+---
+
+The Render Layer is a extendible and pragmatic way to write your render pipeline.
+It allows you to write HTML declaratively and use the full power of the backend to render it.
+
+So, for example, instead of writing this:
+
+```php
+<?php
+echo '<div class="container">';
+
+$item = "Hello World"
+
+echo '<div class="item">';
+echo $item;
+echo '</div>';
+
+echo '</div>';
+```
+
+You can write this:
+
+```php
+<?php
+
+use \Approach\Render\HTML;
+
+$div = new HTML(tag: 'div', classes: ['container']);
+
+$items = ["Hello World", "Cool Stuff", "Awesome"];
+
+foreach ($items as $item) {
+    $div[] = new HTML(tag: 'div', classes: ['item'], content: $item);
+}
+
+echo $div;
+```
+
+The result is the same, but the second example is more readable and maintainable, not to mention that it integrates better with Approach
+as a whole. 

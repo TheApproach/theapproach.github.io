@@ -1,0 +1,74 @@
+---
+title: \Render\HTML Class
+---
+
+The `\Render\HTML` class is the main class that is used to render HTML. It has special 
+methods for rendering HTML elements and wraps around `\Render\Node`, `\Render\XML`, and 
+`\Render\Attribute` classes to essentially render HTML.
+
+## Properties
+
+The `\Render\HTML` class has the following properties:
+
+- `$tag` - The tag name of the element. If `null`, then the element will not have a tag name.
+- `$id` - The id of the element. If `null`, then the element will not have an id.
+- `$classes` - The classes of the element, this can be a string, array, or a `Node` or `Attribute` object.
+- `$attributes` - The attributes of the element. This can be an array or an `Attribute` object.
+- `$content` - The content of the element. This can be a string, a `Stream` object, or another `Render\HTML` object.
+- `$styles` - The styles of the element. This is just a key-value array of styles.
+- `$prerender` - Whether or not to prerender the element. If `true`, then the element will be rendered when the object is constructed.
+- `$selfContained` - Whether or not the element is self-contained. If `true`, then the element will not have an end tag.
+
+## Methods
+
+### Constructor
+
+The `\Render\HTML` class can be initialized as follows:
+
+```php
+$html = new HTML('div');
+```
+
+```php
+public function __construct(
+        public null|string|Stringable $tag = NULL,
+        public null|string|Stringable $id = null,
+		null|string|array|Node|Attribute $classes = null,
+        public null|array|Attribute $attributes = new Attribute,
+        public null|string|Stringable|Stream|self $content = null,
+        public array $styles = [],
+        public bool $prerender = false,
+        public bool $selfContained = false,
+    ) 
+```
+
+### Before and After Content
+To set the before or after content of the element, use the `$root->before` and `$root->after` properties.
+
+```php
+$html = new HTML('div');
+$html->before = 'Before Content';
+$html->after = 'After Content';
+```
+
+### Stringable
+
+The `\Render\HTML` class implements the `Stringable` interface, so it can be used as a string.
+
+```php
+$html = new HTML('div');
+
+echo $html; // <div></div>
+```
+
+Hence, to render the HTML, just echo the object.
+
+### Render
+
+However, to readably render the HTML, use the `render` method.
+
+```php
+$html = new HTML('div');
+
+echo $html->render(); // <div></div>
+```

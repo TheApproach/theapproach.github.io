@@ -1,0 +1,153 @@
+---
+title: Class Overview
+description: An overview of the service class
+---
+
+The Service class is structured with several properties, methods, and constants to provide a flexible framework for handling data.
+
+## Properties Overview
+
+- `flow`: A flow constant determining the input/output behavior of the service.
+- `auto_dispatch`: Determines whether the service should automatically dispatch requests.
+- `format_in`: Specifies the input format (e.g., JSON, CSV, XML).
+- `format_out`: Specifies the output format (e.g., JSON, CSV, XML).
+- `target_in`: Specifies the incoming target type (e.g., file, stream, variable).
+- `target_out`: Specifies the outgoing target type (e.g., file, stream, variable).
+- `input`: Specifies the input data or resource.
+- `output`: Specifies the output data or resource.
+- `meta_data`: An array of metadata associated with the input/output streams.
+- `register_connection`: A flag indicating whether to register the connection when the service is instantiated.
+- `payload`: Stores the data payload processed by the service.
+- `connected`: A flag indicating whether the service is connected.
+- `connections`: A static array of Service instances that have registered connections.
+
+## Methods
+
+### __construct()
+
+Initializes a new Service instance with the provided configuration options.
+
+#### Constructor Options
+
+- `flow $flow = flow::in`: Specifies the input/output behavior of the service. Default is flow::in. Determines how the service should handle incoming and outgoing data (e.g., read-only, write-only, read-write). Examples: flow::in, flow::out, flow::in_out.
+- `bool $auto_dispatch = true`: Determines whether the service should automatically dispatch requests. Default is true. If set to true, the service will automatically execute the dispatch() method when instantiated.
+- `?format $format_in = format::json`: Specifies the input format. Default is format::json. Determines the format in which incoming data should be processed, such as JSON, CSV, or XML. Examples: format::json, format::csv, format::xml.
+- `?format $format_out = format::json`: Specifies the output format. Default is format::json. Determines the format in which processed data should be output, such as JSON, CSV, or XML. Examples: format::json, format::csv, format::xml.
+- `?target $target_in = target::file`: Specifies the incoming target type. Default is target::file. Determines how the service should read input data, such as from a file, a stream, or a variable. Examples: target::file, target::stream, target::variable.
+- `?target $target_out = target::file`: Specifies the outgoing target type. Default is target::file. Determines how the service should send output data, such as to a file, a stream, or a variable. Examples: target::file, target::stream, target::variable.
+- `$input = null`: Specifies the input data or resource. Default is null. Can be a file path, a URL, or any other valid input source based on the target_in property. Examples: './input.json', 'https://api.example.com/data'.
+- `$output = null`: Specifies the output data or resource. Default is null. Can be a file path, a URL, or any other valid output destination based on the target_out property. Examples: './output.json', 'https://api.example.com/data'.
+- `mixed $meta_data = []`: Specifies additional metadata for input and output operations. Default is an empty array.  
+  Intended to include additional context if required by your child class.
+- `bool $register_connection = true`; Determines whether the service instance should register its connection. Default is true. If set to true, the service's connection will be added to the static $connections property for tracking and management. This can be useful for handling multiple service instances.
+
+### dispatch()
+
+Executes the Request, connect, Receive, PreProcess, Process, PostProcess, and Respond steps in the service workflow.
+
+The dispatch() method in the Service class processes and sends a request to the desired target through a sequence of steps. Here, we break down the dispatch timeline with each step of the method:
+
+1. **Request:** The method starts by calling the Request() function. This step may be blank if no prefetch API request is required, such as in cases of user uploads or AJAX requests. It can also act as an interpreter for the incoming command-line arguments.
+2. **Connect:** This step establishes communication with the connected source and prepares metadata by calling the connect() function.
+3. **Receive:** At this point, the method calls the Receive() function to get records from the connected source and transform them into a suitable format.
+4. **PreProcess:** The PreProcess() function is called to perform any necessary preprocessing on the records.
+5. **Decode:** The payload is decoded using the specified input format, with the help of the Decode class.
+6. **Process:** The Process() function processes the decoded payload.
+7. **Encode:** The payload is then encoded using the specified output format, with the help of the Encode class.
+8. **PostProcess:** The PostProcess() function is called to perform any necessary post-processing on the records.
+9. **Respond:** Finally, the method returns the response by calling the Respond() function.
+
+### Request()
+
+The Request method is used to prepare the Service instance for processing incoming data. This method can be overridden in a derived class to handle specific input requirements. By default, it does nothing.
+
+```php
+public function Request(array $meta_data = null)
+{
+    // Do something here
+}
+```
+
+### connect()
+
+The connect method establishes communication with the connected source, prepares metadata, and registers the connection. If the connection is already established, it throws an exception. The method returns true upon successful connection.
+
+```php
+public function connect($register_connection = true)
+{
+    // ...
+}
+```
+
+### Receive()
+
+The `Receive` method is responsible for extracting and transforming data from the input source into a format suitable for processing. It takes an optional `$payload` parameter, which can be used to override the default payload.
+
+```php
+public function Receive(array $payload = null): void
+{
+ // ...
+}
+```
+
+### PreProcess()
+
+The `PreProcess` method is used to perform any required pre-processing tasks before the main processing logic is executed. It takes an optional `$payload` parameter, which can be used to override the default payload.
+
+```php
+public function PreProcess(array $payload = null): void
+{
+ // ...
+}
+```
+
+### Process()
+
+The `Process` method is the core logic of the Service class, where the actual processing of input data takes place. It takes an optional `$payload` parameter, which can be used to override the default payload. This method should be overridden in derived classes to implement the desired processing logic.
+
+```php
+public function Process(array $payload = null): void
+{
+ // ...
+}
+```
+
+### PostProcess()
+
+The `PostProcess` method is used to perform any required post-processing tasks after the main processing logic has been executed. It takes an optional `$payload` parameter, which can be used to override the default payload.
+
+```php
+public function PostProcess(array $payload = null): void
+{
+ // ...
+}
+```
+
+### Respond()
+
+The `Respond` method is responsible for encoding the processed data and sending it to the designated output target. It takes an optional `$payload` parameter, which can be used to override the default payload. The method returns the processed payload.
+
+```php
+public function Respond(array $payload = null): mixed
+{
+ // ...
+}
+```
+
+## Constants
+
+- **STDIN**: A string representing the PHP standard input stream.
+- **STDOUT**: A string representing the PHP standard output stream.
+- **STDERR**: A string representing the PHP standard error stream.
+
+Service offers a comprehensive solution for managing and transforming data among various formats and targets.
+
+Service offers a comprehensive solution for managing and transforming data among various formats and targets
+
+## Intent of Auto-Dispatch
+
+The intent of auto-dispatch, in general, is to automatically process and dispatch requests as they are received without the need for manual intervention.
+
+Essentially, the default action of a Service is to automatically call the dispatch pipeline, instead of your extended class needing to handle each function call. This way, you can overload the various hook functions which expose the pipeline, or even have Service connect to grab data to then process as an input, within a standardized procedure.
+
+Of course, you are free to disable auto_dispatch and create your own flow in another method, or override dispatch in a child class.

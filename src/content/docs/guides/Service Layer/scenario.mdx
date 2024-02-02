@@ -1,0 +1,116 @@
+---
+title: Scenarios
+description: Scenarios where you would use this class
+---
+
+## 1. Reading and processing data from a JSON file
+
+These scenarios assume you have made a class "MyClass" which extends from Service. You may use the default Service in many cases by simply creating new Encoding/Decoding classes.
+(See ./approach/Service/CSV.php for a simple example)
+
+In this scenario, we will read data from a JSON file, process it, and then save the output in another JSON file.
+
+1. Create a JSON file named "input.json" with the following content:
+
+```json
+{
+    "data": [
+        {"value": 1},
+        {"value": 2},
+        {"value": 3}
+    ]
+}
+```
+
+2. Create a new Service instance with the following parameters:
+
+```php
+$service = new MyService(
+    flow::in,
+    true,
+    format::json,
+    format::json,
+    target::file,
+    target::file,
+    'input.json',
+    'output.json'
+);
+```
+
+3. Define the `Process` method to double the value of each item in the data array
+
+```php
+public function Process(array $payload = null): void
+{
+    $this->payload = $payload ?? $this->payload;
+    foreach ($this->payload['data'] as &$item) {
+        $item['value'] *= 2;
+    }
+}
+```
+
+4. Run the service. The result will be saved in a file named "output.json".
+
+## 2. Fetching data from an API and saving it as a CSV file
+
+In this scenario, we will fetch data from an API, process it, and then save the output as a CSV file.
+
+1. Create a new Service instance with the following parameters:
+
+```php
+$service = new MyService(
+    flow::in,
+    true,
+    format::json,
+    format::csv,
+    target::api,
+    target::file,
+    'https://api.example.com/data',
+    'output.csv'
+);
+```
+
+2. Define the `Process` method to double the value of each item in the data array
+
+```php
+public function Process(array $payload = null): void
+{
+    $this->payload = $payload ?? $this->payload;
+    $flatData = [['ID', 'Name', 'Age']];
+    foreach ($this->payload['data'] as $item) {
+        $flatData[] = [$item['id'], $item['name'], $item['age']];
+    }
+    $this->payload = $flatData;
+}
+```
+
+3. Run the service. The result will be saved in a file named "output.csv".
+
+## 3. Receiving input from the command line and printing the output
+
+In this scenario, we will receive input from the command line, process it, and then print the output.
+
+1. Create a new Service instance with the following parameters:
+
+```php
+$service = new MyService(
+	flow::in,
+	false,
+	format::text,
+	format::text,
+	target::cli,
+	target::cli
+);
+```
+
+2. Define the `Process` method to double the value of each item in the data array
+
+```php
+public function Process(array $payload = null): void
+{
+	$this->payload = $payload ?? $this->payload;
+	$this->payload = strrev($this->payload);
+}
+```
+
+3. Run the service. The user will be prompted to enter input text in the command line, and the reversed text will be printed as output.

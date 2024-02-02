@@ -1,0 +1,22 @@
+---
+title: FAQ's
+description: Frequently asked questions about the Service class.
+---
+
+Here are some frequently asked questions related to the Service class:
+
+- **Q: Can I use custom input and output formats with the Service class?**  
+  **A:** Yes, you can use custom input and output formats with the Service class. To do this, you need to implement the necessary encoder and decoder classes and register them with the `Decode` and `Encode` classes. Then, you can specify your custom formats in the Service constructor.
+
+- **Q: How can I handle large datasets with the Service class?**  
+  **A:** When working with large datasets, you should consider using the `target::stream` input and output target. This allows for processing data in chunks, reducing memory usage and improving performance. Additionally, you can use asynchronous processing and multi-threading techniques to further optimize the performance of the Service class.
+
+- **Q: How can I improve the performance of the Service class?**  
+  **A:** To improve the performance of the Service class, you can:
+  - Use the most suitable input and output targets for your specific use case.
+  - Optimize the data serialization and deserialization process by using efficient formats.
+  - Implement asynchronous processing and multi-threading techniques.
+  - Optimize the connection management by reusing connections when possible.
+
+- **Q: How can I extend the functionality of the Service class?**  
+  **A:** You can extend the functionality of the Service class by creating a subclass and overriding the necessary methods. This allows you to add custom functionality, such as support for new input or output targets, additional processing steps, or error handling mechanisms.

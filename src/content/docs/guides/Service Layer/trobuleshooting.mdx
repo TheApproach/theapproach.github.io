@@ -1,0 +1,19 @@
+---
+title: Troubleshooting
+description: Troubleshooting
+---
+
+First, **before troubleshooting**, take a look in the repo at: ./tests/Unit/ServiceCest.php for more usage examples.  
+However, when working with the Service class a variety of concerns are in play. You may encounter some issues. Here are some solutions to common problems:
+
+### Invalid input or output format.  
+Solution: Double-check the input and output formats specified in the Service constructor. Make sure that they are supported by the transcoder classes which have `Decode` and `Encode` functionality. The necessary encoders and decoders must be registered. Check approach/Service/CSV.php for a simple example transcoder class.
+
+### Unsupported input or output target.  
+Solution: Verify that you're using a supported input or output target. If you're using a custom target, ensure that it is properly implemented in the Service namespace.
+
+### Errors related to connecting or disconnecting the Service.  
+Solution: Ensure that you're properly connecting and disconnecting the Service object. Check if the `register_connection` parameter is set correctly in the constructor and if you're calling the `disconnect()` method when you're done using the Service object.
+
+### Problems with reading or writing data.  
+Solution: Check the input and output sources for any issues such as file permissions, network connectivity, or API access. Also, ensure that the data is properly formatted and serialized for the specified format.

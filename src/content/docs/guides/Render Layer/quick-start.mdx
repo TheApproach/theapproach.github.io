@@ -1,0 +1,138 @@
+---
+title: Quick Start
+description: Getting started with the Render Layer
+---
+
+Getting started with the Render Layer is quite simple. The necessary modules and classes are all
+present in the `\Approach\Render` namespace.
+
+The easiest way to understand the Render Layer is to create a simple HTML page with the Render Layer, however,
+the render layer is much more powerful, being able to render not just HTML, but also XML, JSON and basically any format 
+you can think of.
+
+So, think of a simple HTML page, with a header, a body and a footer. The header and footer are the same on every page,
+but the body is different. The body is the content of the page, and it is different for every page.
+
+So, the way you can think of the Render Layer is that it is a way to render the body of the page, and then include
+the header and footer around it.
+Sort of like this:
+    
+```html
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <title>My Page</title>
+    </head>
+    <body>
+        <h1>My Page</h1>
+        <p>This is my page</p>
+    </body>
+    <footer>
+        <p>NoobScience 2024</p>
+    </footer>
+</html>
+```
+
+## Set Up
+
+Since we will be rendering some good o'l HTML, we will need to set up a few thing first. First, we need to include the 
+`\Approach\Render\HTML` namespace, which contains all the classes we need to render HTML.
+
+```php
+use Approach\Render\HTML;
+```
+
+Next, we need to create a root element, a root element is the root of the HTML document, and it is the element that
+contains all the other elements. In HTML, the root element is the `<html>` tag. We can create a root element like this:
+
+```php
+$root = new HTML(tag: 'html');
+```
+
+> Tip: Include `$root->before = <!DOCTYPE html>' . PHP_EOL;` to add the `<!DOCTYPE html>` tag to the beginning of the
+> document.
+
+While we're at it, let's create the `<head>` and `<body>` tags, and add them to the root element.
+
+```php
+$head = new HTML(tag: 'head');
+$body = new HTML(tag: 'body');
+
+$root[] = $head;
+$root[] = $body;
+```
+
+Every HTML element can be extended by adding elements to it, called children. You can do this by extending
+the element with the `[]` operator. 
+
+## Defining some content
+
+Now that we have some basic structure, let's add some content to the `<head>` and `<body>` tags.
+
+First, let's add in a title, and a stylesheet.
+
+```php
+$head[] = new HTML(tag: 'title', content: 'My Page');
+$head[] = new HTML(
+        tag: 'link', 
+        attributes: ['rel' => 'stylesheet', 'href' => 'style.css'], 
+        selfContained: true);
+```
+
+Now, you can `echo $head` to see what it looks like.
+
+```html
+<head>
+    <title>My Page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+```
+
+> Since the `<link>` tag is self contained, it doesn't need a closing tag, so we set `selfContained` to `true`.
+
+Now, let's add some content to the `<body>` tag.
+
+```php
+$body[] = new HTML(tag: 'h1', content: 'My Page');
+$body[] = new HTML(tag: 'p', content: 'This is my page');
+```
+
+Now, you can `echo $body` to see what it looks like.
+
+```html
+<body>
+    <h1>My Page</h1>
+    <p>This is my page</p>
+</body>
+```
+
+## Putting it all together
+
+When you put all this good stuff together, you get something like this:
+
+```php
+// index.php
+
+use Approach\Render\HTML;
+
+$root = new HTML(tag: 'html');
+
+$head = new HTML(tag: 'head');
+$body = new HTML(tag: 'body');
+
+$root[] = $head;
+$root[] = $body;
+
+$head[] = new HTML(tag: 'title', content: 'My Page');
+$head[] = new HTML(
+        tag: 'link', 
+        attributes: ['rel' => 'stylesheet', 'href' => 'style.css'], 
+        selfContained: true);
+
+$body[] = new HTML(tag: 'h1', content: 'My Page');
+$body[] = new HTML(tag: 'p', content: 'This is my page');
+
+echo $root;
+```
+
+Now, if you visit `index.php` in your browser, you should be able to see your page.

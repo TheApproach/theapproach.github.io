@@ -1,0 +1,12 @@
+---
+title: Best Practices
+description: Best Practices.
+---
+
+When using the Service class, follow these recommendations and guidelines to ensure effective and efficient usage:
+
+- **Plan your data flow:** Before implementing the Service class, have a clear understanding of the data flow between different components of your application. This will help you determine the appropriate input and output targets, formats, and other settings.
+- **Choose appropriate input and output targets:** Use the most suitable input and output targets for your specific use case. For example, if you're working with local files, use the `target::file` target. If you're working with API endpoints, use the `target::api` target.
+- **Use the correct format:** Ensure that you're using the correct format for both input and output data. This will prevent issues related to data serialization and deserialization.
+- **Handle exceptions:** Make sure to handle exceptions that may be thrown by the Service class. This will help you manage errors and provide useful feedback to the user.
+- **Disconnect when done:** After completing your tasks with the Service class, don't forget to disconnect the Service object. This will free up resources and prevent potential memory leaks.

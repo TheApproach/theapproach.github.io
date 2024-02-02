@@ -1,0 +1,32 @@
+---
+title: Service Class
+description: Approach is a framework.
+---
+
+`Approach::Service` enables users to send, receive and/or convert various data formats
+
+Incoming or outgoing targets include:
+- APIs 
+- Databases
+- Streams
+- Files
+-Types
+
+Or simply returning the result.
+
+## Interactions
+
+The Service class interacts with a number of other classes and traits to achieve its functionality, including:
+
+1. Target: An enumeration defining the different input and output targets that the Service class can work with, such as files, streams, API endpoints, and more.
+2. Flow: An enumeration that specifies the direction of data flow, either incoming (in) or outgoing (out).
+3. Format: An enumeration that lists the various supported data formats for encoding and decoding, such as JSON, XML, CSV, and more.
+4. Decode: A class that handles the decoding of data from the specified format.
+5. Encode: A class that manages the encoding of data into the desired format.
+6. Custom encoder/decoder classes: Users can create their own encoder and decoder classes to handle custom formats or specific data processing tasks.
+
+## Usage
+
+This adaptable approach to data handling allows developers to seamlessly work with different data sources, destinations, and formats without having to manually handle each conversion or transformation. Process-to-process, client-server and other models are abstracted to a standard interface.
+
+The Service class simplifies complex data processing tasks and enables developers to create more efficient and maintainable APIs.
