@@ -1,0 +1,47 @@
+---
+title: Interface.js
+---
+
+Approach Interface defines a standard pipeline for interfacing your system. GUI, TUI, API, etc.
+
+Interface gives yuo the option to launch AJAX requests purely in HTML or a use a lot of cool combinations with
+Autoform and send data intents to the server.
+
+The most important functions of Interface are:
+
+1. Interface.call.events
+2. Interface.call.Service
+3. Interface.call.Ajax
+
+## Creating an Interface
+
+Including the `approach.interface.js` in your project will give you automatically give you access to all of the
+Interface functions.
+
+To create a new Interface node, you can add a `Interface` class to your HTML element.
+
+```html
+<div class="Interface"></div>
+```
+
+This is cause the creation of an internal Interface object that will be used to manage the node, which looks
+like this:
+
+```javascript
+[element].Interface = new Interface();
+```
+
+The Interface object can be extended to add custom behavior. 
+However, for now, it is important to understand that all events captured by the `.controls` 
+within an `.Interface` will be handled by that Interface object. This significantly reduces event processing. 
+Additionally, controls will only bind listeners inside themselves to `.control` elements for specific 
+events, such as the default `click` event.
+
+The `.controls` class is a special class that is used to define if a particular element is a parent of a control.
+A `.control` class is used to define if a particular element is a control. 
+
+Elements that have the `.control` class will be used to bind event listeners to.
+
+To augment the experience of Interface, you can also use `Autoform` to automagically gather form data and send it to the server.
+
+Look at the example in the next section to learn how to use Interface.

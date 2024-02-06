@@ -1,0 +1,122 @@
+---
+title: Example using Interface
+---
+
+Given below is an example of using interface to create a signin form.
+
+```html
+<div class="Interface">
+    <div class="tab InterfaceContent" id="Survey">
+        <form class="p-3 Autoform" data-action="Survey">
+            <input type="text" name="name" placeholder="Name" class="form-control">
+            <input type="text" name="email" placeholder="Email" class="form-control">
+        </form>
+    </div>
+    <div class="controls">
+        <button
+        type="button"
+        class="visual control btn btn-secondary mt-3"
+        data-api="/server.php"
+        data-role='autoform'
+        data-api-method="POST"
+        data-intent='{ "REFRESH": { "Server" : "Save" } }'
+        data-context='{ "_response_target": "#result"}'
+        >
+            Click Me!
+        </button>
+    </div>
+    <div id="result"></div>
+</div>
+```
+
+The above code creates a form with two input fields. When the button is clicked, the form data is sent to the server and the response is displayed in the `#result` div.
+You can create a `Service` that rests on the server and has a `/server.php` endpoint to handle the form data. The `Service` can be created as shown below:
+
+```php
+class Server extends Service{
+    public function __construct(
+		bool $auto_dispatch = false,
+		?format $format_in = format::json,
+	) {
+
+		self::$registrar['Server']['Save'] = function ($context) {
+			return self::View($context);
+		};
+		parent::__construct($flow, $auto_dispatch, $format_in, $format_out, $target_in, $target_out, $input, $output, $metadata);
+	}
+
+	public function Process(?array $payload = null): void
+	{
+		$payload = $payload ?? $this->payload;
+		foreach ($payload as $verb => $intent) {
+			foreach ($intent as $scope => $instruction) {
+				foreach ($instruction as $command => $context) {
+					$this->payload = self::$registrar[$command][$context]($action);
+				}
+			}
+		}
+	}
+}
+```
+
+Now, when a user enters the name and email and clicks the button, the form data is sent to the server and the response is displayed in the `#result` div.
+The actual `payload` sent to the server is:
+
+```json
+{
+    "REFRESH": {
+        "Server": "Save",
+        "Survey": {
+            "name": "John Doe",
+            "email": "wow@cool.com"
+        }
+    }
+}
+```
+
+## Understanding the code
+
+We'll be taking a closer look at the Submit Button and the Form, for more info on the Service, check the [Service](/docs/service) documentation.
+
+We start the `div` with the class `Interface`. This is the parent container for the form and the submit button.
+This ensures that Approach will be able to initialize an Interface for the div.
+
+### Form
+
+Take a look at the form
+
+```html
+<form class="p-3 Autoform" data-action="Survey">
+    <input type="text" name="name" placeholder="Name" class="form-control">
+    <input type="text" name="email" placeholder="Email" class="form-control">
+</form>
+```
+
+In this, you can notice the `Autoform` class. This is a special class that tells Approach to handle the form submission. The `data-action` attribute is used to specify the action that will be sent to the server. In this case, the action is `Survey`.
+This means that the name and email are sent to the server grouped under the `Survey` action.
+
+### Submit Button
+
+Now, this is the submit button that actually triggers the form submission.
+
+```html
+<button
+    type="button"
+    class="visual control btn btn-secondary mt-3"
+    data-api="/server.php"
+    data-role='autoform'
+    data-api-method="POST"
+    data-intent='{ "REFRESH": { "Server" : "Save" } }'
+    data-context='{ "_response_target": "#result"}'
+    >
+    Click Me!
+</button>
+```
+
+This snippet tells Interface that 
+
+1. The role of this control is to launch a Service request call. Generally this means AJAX to a server.
+2. The API endpoint is `/server.php` that is where the Service is located.
+3. The method of the API call is `POST`, as specified by `data-api-method`.
+4. The intent of the call is to `REFRESH` the `Client` with the response from the `Server` action `Save`.
+5. The context of the call is to update the `#result` div with the response from the server. This is essentially the support payload, which is used to specify any additional information that the server might need to process the request.

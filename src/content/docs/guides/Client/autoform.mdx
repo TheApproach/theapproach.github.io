@@ -1,0 +1,69 @@
+---
+title: Autoform.js
+description: Autoform.js gathers data from forms and includes it with a Service intent
+---
+
+Autoform is part of the standard pipeline for sending intents to a `Service`.
+It automagically gathers and includes form data with the data that is being piped to the Service.
+It can be thought of as a organizer for form data.
+
+Autoform is a part of the `approach.autoform.js` module.
+and can be used to better improve the `Interface` and `Service` interaction.
+
+## Working
+
+Autoform looks for forms that have the `Autoform` class, then based on the `data-action` attribute,
+form data is grouped and piped to the Service.
+
+Autoform has to always be used in a node that is recognized as an `Interface`, ie it's parent should have
+an `Interface` class.
+
+## Example
+
+```html
+<div class="tab tab2 Interface InterfaceContent" id="Survey">
+    <form class="p-3 Autoform" data-action="Survey">
+        <input type="text" name="name" placeholder="Name" class="form-control">
+        <input type="text" name="email" placeholder="Email" class="form-control">
+    </form>
+</div>
+```
+
+Notice the `Autoform` class and the `data-action` attribute. This is the minimum requirement for Autoform to work.
+
+Now, to "submit" the form, you can use a button with the `data-role="autoform` attribute.
+
+```html
+<div class="controls">
+    <button
+    type="button"
+    class="visual control btn btn-secondary mt-3"
+    data-api="/server.php"
+    data-role='autoform'
+    data-api-method="POST"
+    data-intent='{ "REFRESH": { "Server" : "Save" } }'
+    data-context='{ "_response_target": "#result"}'
+    >
+        Click Me!
+    </button>
+</div>
+```
+
+This sends the intent to the server with the following data:
+
+```json
+{
+    "REFRESH": {
+        "Server": "Save",
+        "Survey": {
+            "name": "John Doe",
+            "email": "wow@cool.com"
+        }
+    }
+}
+```
+
+## Use Cases
+
+Autoform can be used to build complex forms and automagically categorize form data.
+It can be used to build surveys, feedback forms and much more.
