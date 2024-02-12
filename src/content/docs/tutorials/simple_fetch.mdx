@@ -1,0 +1,380 @@
+---
+title: Simple Fetching
+description: A simple example of fetching data from the service
+---
+
+The below is a small tutorial on how to do a simple data fetch and render the results on the page.
+This tutorial assumes that you have the approach PHP library and the javascript library all set up and working.
+In a future tutorial, I'll be discussing how to do that setup.
+
+But for now, all you need to get started is a project with the approach PHP library and the javascript library installed.
+This tutorial also assumes that you have read through the documentation and have a basic understanding of how Service and Render layers work.
+
+## Layers We Use
+
+We use two layers in this tutorial, the Service layer and the Render layer.
+We will not be using the resource layer in this example in order to keep the whole process a bit approachable.
+
+- **Service Layer**: This layer serves data.
+- **Render Layer**: This layer is responsible for rendering the data on the page.
+
+We will also be emulating the resource layer with a very simple JSON file.
+
+## Service Layer
+
+How about we first set up the service layer?
+
+### Setting up
+
+To set up service, open up your src/Service/ directory and create a new file called `Server.php`.
+In here, we will be creating a simple service that returns a list of users.
+
+```php
+<?php
+
+namespace SimpleFetch\Service;
+
+require_once __DIR__ . '/../../support/lib/vendor/autoload.php';
+
+use Approach\Render\HTML;
+use Approach\Render\The;
+use Approach\Service\Service;
+use Approach\Service\target;
+use Approach\Service\format;
+use Approach\Service\flow;
+```
+
+These are all the stuff we will be needing for this tutorial.
+Now, we define a `Server` class that extends the Service class and we override the `Process` method all the while using the 
+parent constructor to set up the service.
+
+```php
+class Server extends Service
+{
+	public static $registrar = [];
+
+    public function __construct(
+		flow $flow = flow::in,
+		bool $auto_dispatch = false,
+		?format $format_in = format::json,
+		?format $format_out = format::json,
+		?target $target_in = target::stream,
+		?target $target_out = target::stream,
+		$input = [Service::STDIN],
+		$output = [Service::STDOUT],
+		mixed $metadata = [],
+		bool $register_connection = true
+	) {
+		parent::__construct($flow, $auto_dispatch, $format_in, $format_out, $target_in, $target_out, $input, $output, $metadata);
+	}
+
+    public function Process(?array $payload = null): void
+	{
+		$payload = $payload ?? $this->payload;
+
+		$action = $payload[0]['support'];
+
+		foreach ($payload[0] as $verb => $intent) {
+			foreach ($intent as $scope => $instruction) {
+				foreach ($instruction as $command => $context) {
+                    $this->payload = self::$registrar[$command][$context]($action);
+				}
+			}
+		}
+	}
+}
+```
+
+### Constructor
+
+As mentioned in the Service documentation, the constructor is used to set up the service.
+The constructor takes in a lot of parameters, but for this tutorial, we will only be using the first 5 parameters.
+The rest of the parameters are optional and are not used in this tutorial.
+
+- **flow**: This parameter is used to set the flow of the service. We set it to `flow::in` to indicate that the service is an input service.
+- **auto_dispatch**: This parameter is used to set whether the service should automatically dispatch or not. We set it to `false` to indicate that the service should not automatically dispatch.
+- **format_in**: This parameter is used to set the format of the input. We set it to `format::json` to indicate that the input format is JSON.
+- **format_out**: This parameter is used to set the format of the output. We set it to `format::json` to indicate that the output format is JSON.
+- **target_in**: This parameter is used to set the target of the input. We set it to `target::stream` to indicate that the input target is a stream.
+- **target_out**: This parameter is used to set the target of the output. We set it to `target::stream` to indicate that the output target is a stream.
+
+With all of this out of the way, we can now just called the parent constructor with all of these parameters.
+
+### Process Method
+
+The `Process` method is the method that is called when the service is dispatched.
+This method is responsible for processing the payload and returning the result.
+
+In this method, we first check if the payload is null and if it is, we set it to the payload of the service.
+
+We then loop through the payload and call the appropriate method based on the command and context.
+We then set the payload to the result of the method call.
+
+### The Registrar
+
+The registrar is a static property that we use to store the methods that we will be calling.
+This is not really the best way to do this, but for the sake of simplicity, we will be using this method.
+
+We will be using the registrar to store the methods that we will be calling.
+
+### Our First Method
+
+So, let's set up out first intent.
+It is going to be a simple Hello World, just a simple method that returns a string.
+
+```php
+public static function helloWorld($action): array{
+    return [[
+		'REFRESH' => ['#content > div' => '<div>Hello World</div>'],
+	]];
+}
+```
+
+This is for the sake of testing and to make sure that everything is working as expected.
+
+Now that we have a simple method set up, we can now set up the registrar to store this method.
+So now in the contructor, we can set up the registrar to store this method.
+
+```php
+self::$registrar['Fetch']['View'] = function ($context) {
+	return self::helloWorld($context);
+};
+```
+
+So now, our service is set up and ready to be called.
+
+## Getting Service to Work
+
+Now, in the root of the directory, create a `server.php`. This is going to be the end point that will be called by the approach javascript library.
+
+```php
+<?php
+namespace SimpleFetch;
+
+// Needed for apache2 servers
+ob_flush();
+
+require_once __DIR__ . '/support/lib/vendor/autoload.php';
+
+use \SimpleFetch\Service\Server;
+use \Approach\path;
+use \Approach\Scope;
+use \Approach\Service\target;
+use \Approach\Service\format;
+
+$path_to_project = __DIR__ . '/';
+$path_to_approach = __DIR__ . '/support/lib/approach/';
+$path_to_support = __DIR__ . '//support//';
+
+global $scope;
+$scope = new Scope(
+	path: [
+		path::project->value        =>  $path_to_project,
+		path::installed->value      =>  $path_to_approach,
+		path::support->value        =>  $path_to_support,
+	],
+);
+
+$service = new Server(
+	auto_dispatch: false,
+    format_in: format::json,
+    format_out: format::json,
+    target_in: target::variable,
+    target_out: target::stream,
+    input: [
+        $_POST['json']
+    ],
+    output: ['php://output'],
+);
+
+$output = $service->dispatch();
+```
+
+This is the end point that will be called by the approach javascript library.
+Notice how we set the input to `$_POST['json']`. This is because the approach javascript library sends the payload as a JSON string in the `json` key of the POST request.
+
+We can emulate this by sending a POST request to the server with the payload as a JSON string using any api client like Postman or Insomnia.
+
+```json
+{
+  "support": {
+    "_response_target": "#content>div",
+  },
+  "command": {
+    "REFRESH": {
+      "Fetch": "View"
+    }
+  }
+}
+```
+
+Now, we will get the result of the service call and we can use it to render the result on the page.
+The result will something like this:
+
+```json
+{
+  "REFRESH": {
+    "#content>div": "<div>Hello World</div>"
+  }
+}
+```
+
+## Render Layer
+
+Now that we have a simple service set up, we can now set up the render layer.
+The render layer per se is not going to responsible for the data fetching. That is the job of the approach interface library.
+The render layer is going to be responsible for rendering the data on the page.
+
+So, to do that we need to set up the approach interface library. 
+This is a simple javascript library that is used to fetch data from the service and render it on the page.
+
+### Setting up
+
+Assuming that you already have the approach libraries in the `/static/js/approach/` directory, we now have to initialize it and
+give it access to our DOM. 
+Moreover, we must also include jquery < 3.5.1 and the approach library in the head of the document.
+To do this however, we must first create a document.
+
+To do this, create a simple `index.php` file in the root of the directory and initialize approach in the head of the document.
+
+```php
+<?php
+
+namespace SimpleFetch;
+require_once __DIR__ . '/support/lib/vendor/autoload.php';
+
+use \Approach\Render\HTML;
+
+$webpage = new HTML(tag: 'html');
+$webpage->before = '<!DOCTYPE html>' . PHP_EOL;
+
+$head = new HTML(tag: 'head');
+$webpage[] = $head;
+$head[] = new HTML(tag: 'meta', attributes: [
+    'charset' => 'utf-8',
+], selfContained: true);
+$head[] = new HTML(tag: 'meta', attributes: [
+    'http-equiv' => 'X-UA-Compatible',
+    'content' => 'IE=edge',
+], selfContained: true);
+$head[] = new HTML(tag: 'meta', attributes: [
+    'name' => 'viewport',
+    'content' => 'width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0',
+], selfContained: true);
+$head[] = new HTML(tag: 'script', attributes: [
+    'src' => '//ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js',
+]);
+$head[] = new HTML(tag: 'script', attributes: [
+    'type' => 'text/javascript',
+    'src' => '/static/js/approach/approach.interface.js',
+]);
+$head[] = new HTML(tag: 'script', attributes: [
+    'src' => '/static/js/main.js',
+]);
+
+$body = new HTML(tag: 'body');
+$webpage[] = $body;
+```
+
+We now have a simple document set up with the approach interface library initialized.
+This is all written in PHP using Render.
+
+### main.js
+
+If you notice the main.js file, it is included in the head of the document, this is where we will be setting up the approach interface library.
+Open up the `static/js/main.js` file and set up the approach interface library.
+
+```javascript
+let onReadyHandle = function(element, selector, markup) {
+    $(element)
+        .find('.Interface')
+        .each(function(_, Markup) {
+            let api = '/server.php';
+            // Check if Markup has data-api attribute
+            if ($(Markup).attr('data-api')) api = $(Markup).attr('data-api');
+
+            Markup.Interface = new Interface({ Markup: Markup, api: api });
+        });
+    if ($(element).hasClass('Interface')) {
+        let api = '/service/api.json';
+        if ($(element).attr('data-api')) api = $(element).attr('data-api');
+        element.Interface = new Interface({ Markup: element, api: api });
+};
+
+$(document).ready(function() {
+    Interface.prototype.RefreshComplete = onReadyHandle;
+    onReadyHandle(document, null, null);
+});
+```
+
+This on ready handle is binded to the entire document and is called when the document is ready.
+It is responsible for initializing the approach interface library and setting up the api endpoint.
+
+Moreover, it is also responsible for handling the intents and refreshing the page when the data is fetched.
+
+### Controls
+
+If you notice the `main.js`, you'll notice that the jquery is searching for elements with the class `Interface`.
+Similarly, logic in the approach interface library is also looking for elements with a certain class heirarchy in order
+to categorize them into Interfaces in the first place.
+
+So, we'll need to create a heirarchy like this
+
+```html
+<div class="Interface InterfaceContent">
+    <div class="controls">
+        <button class="control">
+            Fetch
+        </button>
+    </div>
+</div>
+<div id="content">
+    <div></div>
+</div>
+```
+
+Hence, we can do this in the `index.php` file using the Render library.
+
+```php
+$interface = new HTML(tag: 'div', classes: ['Interface', 'InterfaceContent']);
+
+$controls = new HTML(tag: 'div', classes: ['controls']);
+
+$fetch = new HTML(tag: 'button', classes: ['control'], content: 'Fetch');
+
+$controls[] = $fetch;
+$interface[] = $controls;
+
+$content = new HTML(tag: 'div', attributes: [
+    'id' => 'content',
+]);
+
+$body[] = $interface;
+$body[] = $content;
+```
+
+### Intents
+
+Now that we have the controls set up, we can now set up the intents.
+Now I won't be going into too much detail about the intents, but you can read more about them in the documentation.
+We can now set up the stuff in the button to call the service and render the result on the page.
+
+```php
+<button class="control" 
+    data-api="/server.php"
+    data-api-method="POST"
+    data-intent='{ "REFRESH": { "Fetch" : "View" } }'
+    data-context='{ "_response_target": "#content > div" }'>
+    Fetch
+</button>
+```
+
+This is a simple button that when clicked, will call the service and render the result on the page.
+
+## Conclusion
+
+And there you have it, a simple example of fetching data from the service and rendering it on the page.
+We have freatly reduced the amount of code we have to write and we have also made the code more readable and maintainable.
+
+This is just a simple example of how to do this, but you can do a lot more with the approach library.
+You can read more about the approach library in the documentation.

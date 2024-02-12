@@ -27,6 +27,12 @@ export default defineConfig({
                         directory: 'reference',
                     },
                 },
+                {
+                    label: 'Tutorials',
+                    autogenerate: {
+                        directory: 'tutorials',
+                    },
+                }
             ],
         }),
         tailwind(),
